@@ -28,7 +28,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.schmaun.sosimplecounter.MainActivity" />
         </activity>
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -45,6 +44,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.schmaun.sosimplecounter.SettingsActivity" />
         </activity>
+
+        <receiver android:name=".CounterWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/counter_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

@@ -23,6 +23,11 @@
         <item quantity="other">%d days remaining</item>
     </plurals>
 
+    <plurals name="counter_unit">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_licenses">Licenses</string>
 
@@ -30,4 +35,6 @@
     <string name="pref_licences_title">Licences</string>
     <string name="pref_version_title">@string/app_name</string>
     <string name="pref_version_description">Version 1.0</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
