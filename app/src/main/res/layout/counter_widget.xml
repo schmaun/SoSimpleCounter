@@ -4,6 +4,7 @@
     android:padding="@dimen/widget_margin">
 
     <ImageView
+        android:contentDescription="@string/the_widgets_image_view"
         android:id="@+id/widget_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

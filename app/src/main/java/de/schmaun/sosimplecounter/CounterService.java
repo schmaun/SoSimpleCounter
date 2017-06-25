@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 import java.util.Calendar;
 
-public class CounterService {
-    private Context context;
+class CounterService {
+    private final Context context;
 
     public CounterService(Context context) {
         this.context = context;

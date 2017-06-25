@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="licenses_other">
+        <item>"Icon based on icon made by Icon Monk (http://www.flaticon.com/authors/icon-monk) from
+Flaticon (http://www.flaticon.com) is licensed by CC 3.0 BY (http://creativecommons.org/licenses/by/3.0/)"
+        </item>
+
         <item>"https://github.com/rengwuxian/MaterialEditText
 Copyright 2014 rengwuxian
 

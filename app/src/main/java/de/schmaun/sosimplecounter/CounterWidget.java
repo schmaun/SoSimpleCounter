@@ -1,32 +1,75 @@
 package de.schmaun.sosimplecounter;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class CounterWidget extends AppWidgetProvider {
+    private static final String ACTION_SCHEDULED_UPDATE = "de.schmaun.sosimplecounter.CounterWidget.SCHEDULED_UPDATE";
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d("CounterWidget", "onReceive: " + intent.getAction());
+
+        if (intent.getAction().equals(ACTION_SCHEDULED_UPDATE)) {
+            AppWidgetManager manager = AppWidgetManager.getInstance(context);
+            int[] ids = manager.getAppWidgetIds(new ComponentName(context, CounterWidget.class));
+            onUpdate(context, manager, ids);
+        }
+
+        super.onReceive(context, intent);
+    }
+
+
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions)
+    {
+        updateAppWidget(context, appWidgetManager, appWidgetId);
+    }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // There may be multiple widgets active, so update all of them
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        Log.d("CounterWidget", "onEnabled");
+        setAlarm(context);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        Log.d("CounterWidget", "onDisabled");
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingAlarmIntent = getPendingIntent(context);
+        alarmManager.cancel(pendingAlarmIntent);
+    }
+
+    private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                         int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
@@ -40,6 +83,27 @@ public class CounterWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
+    private void setAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingAlarmIntent = getPendingIntent(context);
+        alarmManager.cancel(pendingAlarmIntent);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 1);
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingAlarmIntent);
+    }
+
+    private PendingIntent getPendingIntent(Context context) {
+        Intent alarmIntent = new Intent(context, CounterWidget.class);
+        alarmIntent.setAction(ACTION_SCHEDULED_UPDATE);
+        return PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
+    }
+
     private static Bitmap createContent(Context context, Bundle options) {
         CounterService counterService = new CounterService(context);
         Counter counter = counterService.loadFromPreferences();
@@ -50,6 +114,15 @@ public class CounterWidget extends AppWidgetProvider {
         int maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
 
         float density = context.getResources().getDisplayMetrics().density;
+
+        if (maxWidth < 110) {
+            maxWidth = 110;
+        }
+        if (maxHeight < 110) {
+            maxHeight = 110;
+        }
+
+        Log.d("CounterWidget", String.format(Locale.getDefault(), "width: %s, height: %s", maxWidth, maxHeight));
         int targetWidth = (int)(maxWidth * density);
         int targetHeight = (int)(maxHeight * density);
 
@@ -101,28 +174,4 @@ public class CounterWidget extends AppWidgetProvider {
 
         return nameTextView;
     }
-
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions)
-    {
-        updateAppWidget(context, appWidgetManager, appWidgetId);
-    }
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
 }
-

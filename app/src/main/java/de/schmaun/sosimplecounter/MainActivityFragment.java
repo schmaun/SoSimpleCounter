@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 public class MainActivityFragment extends Fragment {
     private View view;

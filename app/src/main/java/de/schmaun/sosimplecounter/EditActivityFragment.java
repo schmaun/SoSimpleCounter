@@ -13,12 +13,6 @@ import android.widget.Toast;
 public class EditActivityFragment extends Fragment {
     private View view;
 
-    private static String[] fonts = {
-            "fonts/FONT_NAME_1.ttf",
-            "fonts/FONT_NAME_2.ttf",
-            "fonts/FONT_NAME_3.ttf"
-    };
-
     public EditActivityFragment() {
     }
 
