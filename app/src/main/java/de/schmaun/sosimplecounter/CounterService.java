@@ -22,6 +22,12 @@ class CounterService {
         counter.month = sharedPref.getInt(context.getString(R.string.preference_date_month), calendar.get(Calendar.MONTH));
         counter.day = sharedPref.getInt(context.getString(R.string.preference_date_day), calendar.get(Calendar.DAY_OF_MONTH));
 
+        if (counter.name.equals("")) {
+            counter.year = calendar.get(Calendar.YEAR);
+            counter.month = calendar.get(Calendar.MONTH);
+            counter.day = calendar.get(Calendar.DAY_OF_MONTH);
+        }
+
         return counter;
     }
 

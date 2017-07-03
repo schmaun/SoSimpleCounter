@@ -7,8 +7,8 @@ android {
         applicationId "de.schmaun.sosimplecounter"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 1
-        versionName "GammonFlavor Alpha"
+        versionCode 3
+        versionName "UltraGammonFlavor"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

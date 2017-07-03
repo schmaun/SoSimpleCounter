@@ -1,5 +1,8 @@
 package de.schmaun.sosimplecounter;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -70,6 +73,8 @@ public class EditActivityFragment extends Fragment {
                     )
             );
 
+            updateWidgets();
+
             getActivity().finish();
         }
     }
@@ -78,6 +83,16 @@ public class EditActivityFragment extends Fragment {
         CounterService counterService = new CounterService(getContext());
         counterService.saveToPreferences(new Counter());
 
+        updateWidgets();
+
         getActivity().finish();
+    }
+
+    private void updateWidgets() {
+        Intent intent = new Intent(getContext(), CounterWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int ids[] = AppWidgetManager.getInstance(getContext()).getAppWidgetIds(new ComponentName(getContext(), CounterWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        getContext().sendBroadcast(intent);
     }
 }
